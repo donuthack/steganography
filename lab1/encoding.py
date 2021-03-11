@@ -1,10 +1,16 @@
 import os
 
+
+def listToStr(message):
+    res = ""
+    return res.join(message)
+
+
 '''convert message into array of int'''
 
 
 def textToAscii(message):
-    lst = [ord(ch) for ch in message]
+    lst = [ord(x) for x in message]
     return lst
 
 
@@ -15,7 +21,6 @@ def int2Binary(lst):
     for i in lst:
         r = '{0:08b}'.format(i)
         p.append(r)
-    # print(4, type(p))
     return p
 
 
@@ -35,27 +40,64 @@ def scanContainer(file):
 
 
 def hideMessage(binCode, text):
-    container_words = ''
-    zero_gap = " "  # 0 => " "
-    one_gap = "  "  # 1 => "  "
-    a = " ".join(str(x) for x in text)  # from list to string
-    x = a.split()  # string split to list
-    for i in x:
-        container_words += str(i)
-    # print(4, type(res))
+    one_gap = " "  # 0 => " "
+    double_gap = "  "  # 1 => "  "
+    list_to_string = " ".join(str(x) for x in text)  # from list to string
+    container_text = list_to_string.split()  # string split to list
 
     '''take string of binary code message'''
-    binary_string = ' '
+    binary_string = ""
     for i in binCode:
-        binary_string += str(i)
+        binary_string += i
 
     '''check if our container with text can hold a hidden message'''
-    if len(binary_string) > len(container_words):
-        return print("Container doesn't has enough place for hidding message")
+    if len(binary_string) > len(container_text):
+        print("Container doesn't has enough place for hidding message")
 
-    # '''hide our binary-looking message in container by adding " " or "  " as a word'''
-    # for i in binary_string:
-    #     if i == "1":
-    #         word = container_words[i]
+    '''hide our binary-looking message in container by adding " " or "  " as a word'''
+    word = ""
+    for i in range(len(binary_string)):
+        if str(binary_string[i]) == "0":
+            word += str(container_text[i]) + one_gap
+        else:
+            word += str(container_text[i]) + double_gap
+    return word
 
 
+def hiddenToFile(text):
+    file_name = 'hiddenMessage.txt'
+    f = open(file_name, 'a+')  # open file in append mode
+    f.write(text + '\n')
+    f.close()
+
+
+def listToStr(text):
+    res = ""
+    return res.join(text)
+
+
+def binToAscii(codes):
+    ints = [int(item, 2) for item in codes]
+    return ints
+
+
+def AsciToText(ints):
+    res = "".join(chr(x) for x in ints)
+    return res
+
+
+def findMessage(text):
+    code = ""
+    codes = []
+    for i in range(len(text)):
+        if i + 1 != len(text):
+            if len(code) == 8:
+                codes.append(code[0:8])
+                code = ""
+            if text[i] + text[i + 1] == "  ":
+                code = code + "1"
+            elif (i > 0) and text[i] + text[i - 1] != "  " and text[i] == " ":
+                code = code + "0"
+    ints = binToAscii(codes)
+    res = AsciToText(ints)
+    return res
