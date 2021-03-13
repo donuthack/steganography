@@ -1,6 +1,5 @@
 from encoding import *
 
-global bin_text
 
 question = input("What do you want: hide message('h') or find message('f')?\n")
 if question == "h":
