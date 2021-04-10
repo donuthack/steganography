@@ -1,32 +1,34 @@
-from todo import *
+from process import *
 
+global bin_text
 
-answer = str(input("You want hide message(h) or find message(f)?\n"))
-
-if answer == "h":
+question = input("What do you want: hide message('h') or find message('f')?\n")
+if question == "h":
     message = input("Enter message what you want to hide:\n")
-    # if len(message) == 0:
-    #     raise ValueError("You didn't enter any data")
 
-    # text to ascii
-    ascii_text = textToAscii(message)
-    print(ascii_text)
+    # text to ASCII
+    encoded_text = textToAscii(message)
+    print(encoded_text)
 
-    # ascii to bin
-    bin_text = asciiToBin(ascii_text)
+    # ASCII  to binary
+    bin_text = int2Binary(encoded_text)
     print(bin_text)
 
-    image = input("Enter you image name with extension:\n")
-    i = imageInfo(image)
-    print(i)
+    # scan container if there is any text
+    text = scanContainer("/Users/workplace/Desktop/stegano/lab2/container.txt")
+    print(text)
 
-    # hide text in image
-    filename = input("Enter name of new encoded image with extension:\n")
-    encoded_image = hideText(i, bin_text)
-    cv2.imwrite(filename, encoded_image)
-    print(encoded_image)
+    # hide message
+    hide = hideMessage(bin_text, text)
+    hiddenToFile(hide)
 
-elif answer == "f":
-    print("im ready to find")
+elif question == "f":
+    # scan for availability of hidden message
+    hidden_text = scanContainer("/Users/workplace/Desktop/stegano/lab2/hiddenMessage.txt")
+
+    # try to find hidden message
+    decoded = findMessage(hidden_text)
+    print("Hidden message found:")
+    print(decoded)
 else:
-    print("choose right mode:c")
+    print("Please, choose right mode for me")
